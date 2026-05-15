@@ -1,25 +1,9 @@
 const express = require('express')
-const multer = require('multer')
-const path = require('path')
 const Product = require('../models/Product')
 const authMiddleware = require('../middleware/auth')
+const upload = require('../middleware/upload')
 
 const router = express.Router()
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, path.join(__dirname, '../uploads')),
-  filename: (req, file, cb) => {
-    const unique = `${Date.now()}-${Math.round(Math.random() * 1e9)}`
-    cb(null, `${unique}${path.extname(file.originalname)}`)
-  },
-})
-const upload = multer({
-  storage,
-  limits: { fileSize: 5 * 1024 * 1024 },
-  fileFilter: (req, file, cb) => {
-    /^image\//.test(file.mimetype) ? cb(null, true) : cb(new Error('Images only'))
-  },
-})
 
 const toBoolean = (v) => v === 'Yes' || v === 'true' || v === true
 
@@ -28,7 +12,7 @@ router.get('/', authMiddleware, async (req, res) => {
   try {
     const products = await Product.find({ createdBy: req.user._id }).sort({ createdAt: -1 })
     res.json(products)
-  } catch (err) {
+  } catch {
     res.status(500).json({ message: 'Server error' })
   }
 })
@@ -37,19 +21,20 @@ router.get('/', authMiddleware, async (req, res) => {
 router.post('/', authMiddleware, upload.array('images', 10), async (req, res) => {
   try {
     const { name, productType, quantityStock, mrp, sellingPrice, brandName, exchangeEligibility } = req.body
+
     if (!name || !productType || !quantityStock || !mrp || !sellingPrice || !brandName) {
       return res.status(400).json({ message: 'All fields are required' })
     }
 
-    const imageUrls = (req.files || []).map(
-      (f) => `${req.protocol}://${req.get('host')}/uploads/${f.filename}`
-    )
+    // multer-storage-cloudinary sets file.path to the Cloudinary secure_url
+    const imageUrls = (req.files || []).map((f) => f.path)
 
     const product = await Product.create({
-      name, productType,
+      name,
+      productType,
       quantityStock: Number(quantityStock),
-      mrp: Number(mrp),
-      sellingPrice: Number(sellingPrice),
+      mrp:           Number(mrp),
+      sellingPrice:  Number(sellingPrice),
       brandName,
       images: imageUrls,
       exchangeEligibility: toBoolean(exchangeEligibility),
@@ -71,19 +56,21 @@ router.put('/:id', authMiddleware, upload.array('images', 10), async (req, res) 
 
     const { name, productType, quantityStock, mrp, sellingPrice, brandName, exchangeEligibility } = req.body
 
-    const newImages = (req.files || []).map(
-      (f) => `${req.protocol}://${req.get('host')}/uploads/${f.filename}`
-    )
+    const newImageUrls = (req.files || []).map((f) => f.path)
 
     Object.assign(product, {
-      name: name || product.name,
-      productType: productType || product.productType,
-      quantityStock: quantityStock !== undefined ? Number(quantityStock) : product.quantityStock,
-      mrp: mrp !== undefined ? Number(mrp) : product.mrp,
-      sellingPrice: sellingPrice !== undefined ? Number(sellingPrice) : product.sellingPrice,
-      brandName: brandName || product.brandName,
-      exchangeEligibility: exchangeEligibility !== undefined ? toBoolean(exchangeEligibility) : product.exchangeEligibility,
-      images: newImages.length > 0 ? [...product.images, ...newImages] : product.images,
+      name:           name           || product.name,
+      productType:    productType    || product.productType,
+      quantityStock:  quantityStock  !== undefined ? Number(quantityStock)  : product.quantityStock,
+      mrp:            mrp            !== undefined ? Number(mrp)            : product.mrp,
+      sellingPrice:   sellingPrice   !== undefined ? Number(sellingPrice)   : product.sellingPrice,
+      brandName:      brandName      || product.brandName,
+      exchangeEligibility: exchangeEligibility !== undefined
+        ? toBoolean(exchangeEligibility)
+        : product.exchangeEligibility,
+      images: newImageUrls.length > 0
+        ? [...product.images, ...newImageUrls]
+        : product.images,
     })
 
     await product.save()
