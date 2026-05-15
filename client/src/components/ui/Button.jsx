@@ -3,43 +3,36 @@ export default function Button({
   onClick,
   disabled,
   variant = "primary",
+  fullWidth = false,
   className = "",
   style: styleProp = {},
+  type = "button",
   ...props
 }) {
   const bgColor =
     {
       primary: disabled ? "#a5b4fc" : "#3b4cca",
-      danger: disabled ? "#fca5a5" : "#3b4cca", // matches Figma — delete button is also indigo
+      danger: disabled ? "#fca5a5" : "#3b4cca",
+      auth: disabled ? "#a5b4fc" : "#1e2a8a",
     }[variant] ?? "#3b4cca";
 
   return (
     <button
+      type={type}
       onClick={onClick}
       disabled={disabled}
-      className={className}
+      className={[
+        "inline-flex items-center justify-center",
+        "rounded-lg border-none font-semibold text-white",
+        "transition-opacity duration-150 whitespace-nowrap",
+        "text-[13px] h-9",
+        fullWidth ? "w-full px-0" : "px-[22px]",
+        disabled ? "cursor-not-allowed" : "cursor-pointer hover:opacity-[0.88]",
+        className,
+      ].join(" ")}
       style={{
-        height: "36px",
-        padding: "0 22px",
-        borderRadius: "8px",
-        border: "none",
         backgroundColor: bgColor,
-        color: "#ffffff",
-        fontSize: "13px",
-        fontWeight: 600,
-        cursor: disabled ? "not-allowed" : "pointer",
-        transition: "opacity 0.15s",
-        whiteSpace: "nowrap",
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
         ...styleProp,
-      }}
-      onMouseEnter={(e) => {
-        if (!disabled) e.currentTarget.style.opacity = "0.88";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.opacity = "1";
       }}
       {...props}
     >
