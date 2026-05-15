@@ -1,5 +1,6 @@
 const variants = {
   primary:   'bg-[#1824e8] hover:bg-[#1018bf] text-white shadow-[0_8px_18px_rgba(24,36,232,0.18)]',
+  auth:      'bg-[#071074] hover:bg-[#050b5d] text-white',
   secondary: 'bg-white border border-[#d7dce5] text-[#344054] hover:bg-[#f8fafc]',
   danger:    'bg-[#1824e8] hover:bg-[#1018bf] text-white shadow-[0_8px_18px_rgba(24,36,232,0.18)]',
   ghost:     'text-[#667085] hover:bg-[#f2f4f7]',

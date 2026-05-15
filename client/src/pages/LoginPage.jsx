@@ -4,6 +4,7 @@ import { sendOtp } from "../api/auth";
 import { useForm } from "../hooks/useForm";
 import AuthLayout from "../layouts/AuthLayout";
 import { ROUTES } from "../constants/routes";
+import Button from "../components/ui/Button";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -106,25 +107,15 @@ export default function LoginPage() {
         </div>
 
         {/* Button */}
-        <button
+        <Button
           type="submit"
           disabled={loading}
-          className="
-            w-full
-            h-10
-            rounded-lg
-            bg-[#071074]
-            text-white
-            text-[14px]
-            font-semibold
-            transition-all
-            hover:bg-[#071070]
-            active:scale-[0.99]
-            disabled:opacity-60
-          "
+          variant="auth"
+          fullWidth
+          className="text-[14px]"
         >
           {loading ? "Sending OTP..." : "Login"}
-        </button>
+        </Button>
       </form>
     </AuthLayout>
   );
