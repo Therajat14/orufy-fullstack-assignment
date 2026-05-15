@@ -5,7 +5,7 @@ import ProductCard from "../components/home/ProductCard";
 import EditProductModal from "../components/products/EditProductModal";
 import DeleteProductModal from "../components/products/DeleteProductModal";
 import EmptyState from "../components/ui/EmptyState";
-import { GridEmptyIcon } from "../components/icons";
+import { GridEmptyIcon } from "../components/layout";
 
 const TABS = ["Published", "Unpublished"];
 
