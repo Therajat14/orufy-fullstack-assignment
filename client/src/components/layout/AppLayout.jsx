@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Outlet, useNavigate, useSearchParams } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import { useAuth } from "../../hooks/useAuth";
-import { ChevronDown, LogoutIcon, SearchIcon } from "../icons";
+import { ChevronDown, LogoutIcon, SearchIcon } from ".";
 
 export default function AppLayout() {
   const { user, logout } = useAuth();
@@ -114,10 +114,9 @@ export default function AppLayout() {
                 placeholder="Search Services, Products"
                 value={searchQuery}
                 onChange={(e) =>
-                  setSearchParams(
-                    e.target.value ? { q: e.target.value } : {},
-                    { replace: true }
-                  )
+                  setSearchParams(e.target.value ? { q: e.target.value } : {}, {
+                    replace: true,
+                  })
                 }
                 style={{
                   background: "none",
