@@ -83,13 +83,13 @@ export const UploadIcon = ({ size = 28 }) => (
   </svg>
 )
 
-export const GridEmptyIcon = ({ size = 78 }) => (
+export const GridEmptyIcon = ({ size = 100 }) => (
   <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
-    <rect x="4" y="4" width="24" height="24" rx="4" stroke="#1e1b8e" strokeWidth="2.5" fill="none" />
-    <rect x="36" y="4" width="24" height="24" rx="4" stroke="#1e1b8e" strokeWidth="2.5" fill="none" />
-    <rect x="4" y="36" width="24" height="24" rx="4" stroke="#1e1b8e" strokeWidth="2.5" fill="none" />
-    <line x1="48" y1="40" x2="48" y2="56" stroke="#1e1b8e" strokeWidth="2.5" strokeLinecap="round" />
-    <line x1="40" y1="48" x2="56" y2="48" stroke="#1e1b8e" strokeWidth="2.5" strokeLinecap="round" />
+    <rect x="4" y="4" width="24" height="24" rx="4" stroke="#111652" strokeWidth="2.5" fill="none" />
+    <rect x="36" y="4" width="24" height="24" rx="4" stroke="#111652" strokeWidth="2.5" fill="none" />
+    <rect x="4" y="36" width="24" height="24" rx="4" stroke="#111652" strokeWidth="2.5" fill="none" />
+    <line x1="48" y1="40" x2="48" y2="56" stroke="#111652" strokeWidth="2.5" strokeLinecap="round" />
+    <line x1="40" y1="48" x2="56" y2="48" stroke="#111652" strokeWidth="2.5" strokeLinecap="round" />
   </svg>
 )
 
