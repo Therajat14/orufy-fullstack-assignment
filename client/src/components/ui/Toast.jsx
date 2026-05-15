@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { XIcon } from "../icons";
+import { XIcon } from "../layout";
 
 export default function Toast({ message, onClose, duration = 3000 }) {
   useEffect(() => {
