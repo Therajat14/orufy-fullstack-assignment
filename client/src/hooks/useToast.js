@@ -1,12 +1,16 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useState } from "react";
 
 export function useToast() {
-  const [toast, setToast] = useState('')
+  const [toast, setToast] = useState("");
 
   const showToast = useCallback((msg) => {
-    setToast(msg)
-    setTimeout(() => setToast(''), 3000)
-  }, [])
+    setToast("");
+    setTimeout(() => setToast(msg), 10);
+  }, []);
 
-  return { toast, showToast, clearToast: () => setToast('') }
+  const clearToast = useCallback(() => {
+    setToast("");
+  }, []);
+
+  return { toast, showToast, clearToast };
 }
