@@ -2,6 +2,8 @@ const express = require('express')
 const jwt = require('jsonwebtoken')
 const User = require('../models/User')
 const OTP = require('../models/OTP')
+const validate = require('../middleware/validate')
+const { sendOtpSchema, verifyOtpSchema } = require('../schemas/auth')
 
 const router = express.Router()
 
@@ -10,11 +12,8 @@ function generateOTP() {
 }
 
 // POST /api/auth/send-otp
-router.post('/send-otp', async (req, res) => {
+router.post('/send-otp', validate(sendOtpSchema), async (req, res) => {
   const { identifier } = req.body
-  if (!identifier?.trim()) {
-    return res.status(400).json({ message: 'Email or phone number is required' })
-  }
 
   const otp = generateOTP()
   const expiresAt = new Date(Date.now() + 5 * 60 * 1000) // 5 min
@@ -33,11 +32,8 @@ router.post('/send-otp', async (req, res) => {
 })
 
 // POST /api/auth/verify-otp
-router.post('/verify-otp', async (req, res) => {
+router.post('/verify-otp', validate(verifyOtpSchema), async (req, res) => {
   const { identifier, otp } = req.body
-  if (!identifier || !otp) {
-    return res.status(400).json({ message: 'Identifier and OTP are required' })
-  }
 
   const record = await OTP.findOne({ identifier: identifier.trim() })
   if (!record) {
