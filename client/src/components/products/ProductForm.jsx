@@ -1,5 +1,6 @@
 import { useRef } from 'react'
-import FormField, { inputCls } from '../ui/FormField'
+import FormField from '../ui/FormField'
+import { inputCls } from '../ui/formStyles'
 import { UploadIcon } from '../icons'
 
 const PRODUCT_TYPES = [
@@ -23,13 +24,13 @@ export default function ProductForm({ form, onChange, errors = {}, images = [], 
   }
 
   return (
-    <div className="px-6 py-5 space-y-4">
+    <div className="px-6 py-6 space-y-4">
       <FormField label="Product Name" error={errors.name}>
         <input
           type="text"
           value={form.name}
           onChange={set('name')}
-          placeholder="e.g. CakeZone Walnut Brownie"
+          placeholder="CakeZone Walnut Brownie"
           className={inputCls(errors.name)}
         />
       </FormField>
@@ -45,82 +46,91 @@ export default function ProductForm({ form, onChange, errors = {}, images = [], 
         </select>
       </FormField>
 
-      <div className="grid grid-cols-3 gap-3">
-        <FormField label="Qty Stock" error={errors.quantityStock}>
-          <input
-            type="number"
-            value={form.quantityStock}
-            onChange={set('quantityStock')}
-            placeholder="200"
-            className={inputCls(errors.quantityStock)}
-          />
-        </FormField>
-        <FormField label="MRP (₹)" error={errors.mrp}>
-          <input
-            type="number"
-            value={form.mrp}
-            onChange={set('mrp')}
-            placeholder="2000"
-            className={inputCls(errors.mrp)}
-          />
-        </FormField>
-        <FormField label="Sell Price (₹)" error={errors.sellingPrice}>
-          <input
-            type="number"
-            value={form.sellingPrice}
-            onChange={set('sellingPrice')}
-            placeholder="1500"
-            className={inputCls(errors.sellingPrice)}
-          />
-        </FormField>
-      </div>
+      <FormField label="Quantity Stock" error={errors.quantityStock}>
+        <input
+          type="number"
+          value={form.quantityStock}
+          onChange={set('quantityStock')}
+          placeholder="Total numbers of Stock available"
+          className={inputCls(errors.quantityStock)}
+        />
+      </FormField>
+
+      <FormField label="MRP" error={errors.mrp}>
+        <input
+          type="number"
+          value={form.mrp}
+          onChange={set('mrp')}
+          placeholder="Total numbers of Stock available"
+          className={inputCls(errors.mrp)}
+        />
+      </FormField>
+
+      <FormField label="Selling Price" error={errors.sellingPrice}>
+        <input
+          type="number"
+          value={form.sellingPrice}
+          onChange={set('sellingPrice')}
+          placeholder="Total numbers of Stock available"
+          className={inputCls(errors.sellingPrice)}
+        />
+      </FormField>
 
       <FormField label="Brand Name" error={errors.brandName}>
         <input
           type="text"
           value={form.brandName}
           onChange={set('brandName')}
-          placeholder="e.g. CakeZone"
+          placeholder="Total numbers of Stock available"
           className={inputCls(errors.brandName)}
         />
       </FormField>
 
-      <FormField label="Upload Product Images">
+      <FormField
+        label={
+          <div className="flex items-center justify-between">
+            <span>Upload Product Images</span>
+            {images.length > 0 && (
+              <button
+                type="button"
+                onClick={() => fileRef.current.click()}
+                className="font-medium text-[#26324b]"
+              >
+                Add More Photos
+              </button>
+            )}
+          </div>
+        }
+      >
         {images.length > 0 ? (
-          <div className="flex flex-wrap gap-2">
+          <div className="min-h-20 rounded-lg border border-dashed border-[#d7dce5] px-3 py-3 flex flex-wrap gap-4">
             {images.map((img, i) => (
               <div key={i} className="relative group">
                 <img
                   src={img.preview}
                   alt=""
-                  className="w-16 h-16 object-cover rounded-xl border border-gray-200"
+                  className="w-14 h-14 object-cover rounded-md border border-[#d7dce5]"
                 />
                 <button
                   type="button"
                   onClick={() => onRemoveImage(i)}
-                  className="absolute -top-1.5 -right-1.5 bg-white rounded-full border border-gray-200 text-gray-500 hover:text-red-500 w-5 h-5 flex items-center justify-center text-xs shadow-sm transition"
+                  className="absolute -top-2 -right-2 bg-white rounded-full border border-[#cfd5df] text-[#26324b] hover:text-red-500 w-5 h-5 flex items-center justify-center text-xs shadow-sm transition"
                 >
                   ×
                 </button>
               </div>
             ))}
-            <button
-              type="button"
-              onClick={() => fileRef.current.click()}
-              className="w-16 h-16 border-2 border-dashed border-gray-200 rounded-xl flex items-center justify-center text-gray-400 hover:border-indigo-400 hover:text-indigo-400 transition text-2xl"
-            >
-              +
-            </button>
           </div>
         ) : (
           <div
             onClick={() => fileRef.current.click()}
-            className="border-2 border-dashed border-gray-200 rounded-xl py-7 flex flex-col items-center gap-2 cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/30 transition group"
+            className="min-h-20 border border-dashed border-[#d7dce5] rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-[#8a8fd6] hover:bg-indigo-50/30 transition group"
           >
-            <UploadIcon className="text-gray-300 group-hover:text-indigo-400 transition" />
-            <p className="text-sm text-gray-400">
-              Drop images here or{' '}
-              <span className="text-[#1e1b8e] font-medium">Browse</span>
+            <UploadIcon className="hidden text-gray-300 group-hover:text-indigo-400 transition" />
+            <p className="text-sm text-[#98a2b3] leading-5 text-center">
+              Enter Description
+              <br />
+              <span className="font-semibold text-[#344054]">Browse</span>
             </p>
           </div>
         )}
@@ -134,7 +144,7 @@ export default function ProductForm({ form, onChange, errors = {}, images = [], 
         />
       </FormField>
 
-      <FormField label="Exchange or Return Eligibility">
+      <FormField label="Exchange or return eligibility">
         <select
           value={form.exchangeEligibility}
           onChange={set('exchangeEligibility')}

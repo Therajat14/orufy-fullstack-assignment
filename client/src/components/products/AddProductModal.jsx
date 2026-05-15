@@ -37,7 +37,7 @@ export default function AddProductModal({ onClose, onAdd }) {
 
   const validate = () => {
     const e = {}
-    if (!form.name.trim())     e.name = 'Product name is required'
+    if (!form.name.trim())     e.name = 'Please enter product name'
     if (!form.productType)     e.productType = 'Select a product type'
     if (!form.quantityStock)   e.quantityStock = 'Required'
     if (!form.mrp)             e.mrp = 'Required'
@@ -71,8 +71,7 @@ export default function AddProductModal({ onClose, onAdd }) {
       footer={
         <>
           {submitError && <p className="text-red-500 text-xs mr-auto">{submitError}</p>}
-          <Button variant="secondary" onClick={onClose}>Cancel</Button>
-          <Button onClick={handleSubmit} disabled={loading}>
+          <Button onClick={handleSubmit} disabled={loading} className="ml-auto min-w-[78px]">
             {loading ? 'Creating…' : 'Create'}
           </Button>
         </>

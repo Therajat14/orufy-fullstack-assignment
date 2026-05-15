@@ -67,8 +67,7 @@ export default function EditProductModal({ product, onClose, onSave }) {
       footer={
         <>
           {submitError && <p className="text-red-500 text-xs mr-auto">{submitError}</p>}
-          <Button variant="secondary" onClick={onClose}>Cancel</Button>
-          <Button onClick={handleSubmit} disabled={loading}>
+          <Button onClick={handleSubmit} disabled={loading} className="ml-auto min-w-[78px]">
             {loading ? 'Saving…' : 'Update'}
           </Button>
         </>

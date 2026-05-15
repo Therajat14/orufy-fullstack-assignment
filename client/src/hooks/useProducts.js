@@ -14,7 +14,10 @@ export function useProducts() {
     finally { setLoading(false) }
   }, [])
 
-  useEffect(() => { fetchProducts() }, [fetchProducts])
+  useEffect(() => {
+    const timer = setTimeout(fetchProducts, 0)
+    return () => clearTimeout(timer)
+  }, [fetchProducts])
 
   const addProduct = (product) =>
     setProducts((prev) => [...prev, product])

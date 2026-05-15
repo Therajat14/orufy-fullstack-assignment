@@ -1,67 +1,167 @@
-import authBg from '../../assets/auth/auth-background.png'
-import showcaseCard from '../../assets/auth/auth-showcase-card.jpg'
-import logo from '../../assets/logo/Logo.png'
+import authBg from "../../assets/auth/auth-background.png";
+import showcaseCard from "../../assets/auth/auth-showcase-card.jpg";
+import logo from "../../assets/logo/Logo.png";
 
 export default function AuthLeftPanel() {
   return (
     <div
-      className="hidden lg:flex relative w-full h-full overflow-hidden items-center justify-center"
-      style={{
-        borderRadius: '0 32px 32px 0',
-        background: `linear-gradient(
-          180deg,
-          #010860 0%,
-          #002283 19.23%,
-          #734AA3 38.46%,
-          #E7959C 57.21%,
-          #E4A182 76.92%,
-          #BF3613 100%
-        )`,
-      }}
+      className="
+        relative
+        w-full
+        h-full
+        rounded-[32px]
+        overflow-hidden
+        border
+        border-[#d7dce5]
+      "
+      style={{ backgroundColor: "#f5f0f5" }}
     >
-      {/* White lattice texture — lightens gradient into pastel tones */}
       <img
         src={authBg}
         alt=""
         aria-hidden="true"
-        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-        style={{ opacity: 0.72 }}
+        className="
+          absolute
+          inset-0
+          w-full
+          h-full
+          object-cover
+          pointer-events-none
+          select-none
+        "
+        style={{
+          opacity: 0.86,
+        }}
       />
 
-      {/* Logo */}
-      <div className="absolute top-8 left-8 z-10">
-        <img src={logo} alt="Productr" className="h-9 w-auto" />
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: `
+            linear-gradient(
+              180deg,
+              #010860 0%,
+              #002283 19.23%,
+              #734AA3 38.46%,
+              #E7959C 57.21%,
+              #E4A182 76.92%,
+              #BF3613 100%
+            )
+          `,
+          mixBlendMode: "overlay",
+          opacity: 0.56,
+        }}
+      />
+
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(26,39,138,0.26) 0%, rgba(255,255,255,0.4) 47%, rgba(255,186,156,0.42) 100%)",
+        }}
+      />
+
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle at 52% 18%, rgba(218,224,255,0.58), transparent 34%), radial-gradient(circle at 50% 92%, rgba(255,208,188,0.58), transparent 40%)",
+        }}
+      />
+
+      <div className="absolute top-6 left-4 z-20">
+        <img src={logo} alt="Productr" className="h-[34px] w-auto object-contain" />
       </div>
 
-      {/* Showcase card */}
+      {/* Showcase Card */}
       <div
-        className="relative z-10 overflow-hidden"
+        className="
+          absolute
+          left-1/2
+          top-1/2
+          -translate-x-1/2
+          -translate-y-1/2
+          w-[310px]
+          h-[480px]
+          rounded-[42px]
+          overflow-hidden
+          z-20
+        "
         style={{
-          width: 312,
-          height: 480,
-          borderRadius: 40,
-          border: '1.5px solid rgba(255, 220, 180, 0.5)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.35), 0 4px 16px rgba(0,0,0,0.2)',
+          border: "1px solid rgba(255,255,255,0.28)",
+          boxShadow: "0 16px 38px rgba(64, 41, 32, 0.34)",
         }}
       >
+        {/* Image */}
         <img
           src={showcaseCard}
           alt="Product showcase"
-          className="absolute inset-0 w-full h-full object-cover object-center"
+          className="
+            absolute
+            inset-0
+            w-full
+            h-full
+            object-cover
+            object-center
+          "
         />
 
-        {/* Bottom gradient overlay for text legibility */}
+        {/* Top Glow */}
         <div
-          className="absolute bottom-0 left-0 right-0 flex flex-col items-center pb-6 pt-14"
+          className="
+            absolute
+            top-[-30px]
+            left-1/2
+            -translate-x-1/2
+            w-[200px]
+            h-[100px]
+            rounded-full
+            blur-3xl
+            bg-[#fff1b8]/40
+          "
+        />
+
+        {/* Bottom Overlay */}
+        <div
+          className="
+            absolute
+            inset-x-0
+            bottom-0
+            h-[140px]
+          "
           style={{
-            background: 'linear-gradient(to top, rgba(0,0,0,0.68) 0%, transparent 100%)',
+            background:
+              "linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.18) 55%, transparent 100%)",
           }}
+        />
+
+        {/* Text */}
+        <div
+          className="
+            absolute
+            bottom-10
+            left-1/2
+            -translate-x-1/2
+            text-center
+            w-full
+            px-6
+          "
         >
-          <p className="text-white font-bold text-[15px] leading-6 text-center px-4">
-            Uplift your<br />product to market
+          <p
+            className="
+              text-white
+              text-[20px]
+              leading-[22px]
+              font-bold
+              tracking-[-0.01em]
+            "
+          >
+            Uplift your
+            <br />
+            product to market
           </p>
         </div>
       </div>
     </div>
-  )
+  );
 }

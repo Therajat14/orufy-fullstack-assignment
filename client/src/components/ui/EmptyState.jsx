@@ -1,13 +1,13 @@
 export default function EmptyState({ icon, title, description, action }) {
   return (
-    <div className="flex flex-col items-center justify-center py-24 gap-5">
-      <div className="p-5 bg-indigo-50 rounded-2xl">
+    <div className="flex min-h-[calc(100vh-170px)] flex-col items-center justify-center gap-5 text-center">
+      <div className="text-[#08148a]">
         {icon}
       </div>
-      <div className="text-center">
-        <p className="font-semibold text-gray-800 text-[15px]">{title}</p>
+      <div>
+        <p className="font-bold text-[#344054] text-[22px] leading-7">{title}</p>
         {description && (
-          <p className="text-sm text-gray-400 mt-1.5 max-w-xs mx-auto leading-relaxed">
+          <p className="text-[15px] text-[#98a2b3] mt-2 max-w-[360px] mx-auto leading-5">
             {description}
           </p>
         )}

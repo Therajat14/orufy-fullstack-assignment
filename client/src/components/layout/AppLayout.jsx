@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 import Sidebar from './Sidebar'
-import { useAuth } from '../../context/AuthContext'
-import { HomeIcon, ProductsIcon, ChevronDown, LogoutIcon } from '../icons'
+import { useAuth } from '../../hooks/useAuth'
+import { HomeIcon, ProductsIcon, ChevronDown, LogoutIcon, SearchIcon } from '../icons'
 
 const PAGE_META = {
   '/home':     { label: 'Home',     Icon: HomeIcon },
@@ -34,26 +34,41 @@ export default function AppLayout() {
 
   const initials = user?.name?.[0]?.toUpperCase() || user?.identifier?.[0]?.toUpperCase() || 'U'
 
+  const showProductsTools = pathname === '/products'
+
   return (
-    <div className="flex min-h-screen bg-[#f8f8fc]">
+    <div className="flex min-h-screen bg-white text-[#344054]">
       <Sidebar />
 
       <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
-        {/* Top header */}
-        <header className="h-14 flex items-center justify-between px-6 bg-white border-b border-gray-100 shrink-0">
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-sm text-gray-500">
-            <page.Icon size={15} />
-            <span className="font-medium text-gray-700">{page.label}</span>
+        <header className="h-16 flex items-center justify-between px-7 shrink-0 border-b border-[#eef0f5] bg-[linear-gradient(105deg,#fff7f5_0%,#fff_34%,#fbffe9_56%,#f8fbff_100%)]">
+          <div className="flex items-center gap-2 text-sm text-[#26324b]">
+            {showProductsTools && (
+              <>
+                <page.Icon size={14} />
+                <span className="font-medium">{page.label}</span>
+              </>
+            )}
           </div>
 
-          {/* User avatar + dropdown */}
+          <div className="ml-auto flex items-center gap-14">
+            {showProductsTools && (
+              <label className="hidden md:flex h-[34px] w-[340px] items-center gap-2 rounded bg-[#f4f5f8] px-3 text-[#667085] cursor-text">
+                <SearchIcon size={15} />
+                <input
+                  type="text"
+                  placeholder="Search Services, Products"
+                  className="w-full bg-transparent text-sm text-[#344054] placeholder:text-[#667085] outline-none"
+                />
+              </label>
+            )}
+
           <div ref={dropdownRef} className="relative">
             <button
               onClick={() => setDropdownOpen((v) => !v)}
-              className="flex items-center gap-2 hover:opacity-80 transition"
+              className="flex items-center gap-3 hover:opacity-80 transition"
             >
-              <div className="w-8 h-8 rounded-full bg-linear-to-br from-orange-400 to-pink-500 flex items-center justify-center text-white text-sm font-bold select-none">
+              <div className="w-7 h-7 rounded-full bg-linear-to-br from-orange-300 via-pink-300 to-indigo-300 border border-white shadow-sm flex items-center justify-center text-white text-xs font-bold select-none">
                 {initials}
               </div>
               <ChevronDown size={15} />
@@ -75,9 +90,9 @@ export default function AppLayout() {
               </div>
             )}
           </div>
+          </div>
         </header>
 
-        {/* Page content */}
         <main className="flex-1 overflow-auto bg-white">
           <Outlet />
         </main>

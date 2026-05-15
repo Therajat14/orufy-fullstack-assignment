@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { XIcon } from '../icons'
 
 export default function Modal({ title, onClose, children, footer, size = 'md' }) {
-  const sizeClass = { sm: 'max-w-sm', md: 'max-w-lg', lg: 'max-w-2xl' }
+  const sizeClass = { sm: 'max-w-[400px]', md: 'max-w-[472px]', lg: 'max-w-[560px]' }
 
   useEffect(() => {
     const handler = (e) => { if (e.key === 'Escape') onClose() }
@@ -12,15 +12,15 @@ export default function Modal({ title, onClose, children, footer, size = 'md' })
 
   return (
     <div
-      className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-[#1f2a44]/45 flex items-start justify-center z-50 p-4 pt-[90px]"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className={`bg-white rounded-2xl shadow-2xl w-full ${sizeClass[size]} max-h-[92vh] flex flex-col`}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
-          <h2 className="text-base font-semibold text-gray-900">{title}</h2>
+      <div className={`bg-white rounded-lg shadow-2xl w-full ${sizeClass[size]} max-h-[calc(100vh-120px)] flex flex-col overflow-hidden`}>
+        <div className="flex items-center justify-between px-6 h-14 border-b border-[#edf0f4] shrink-0">
+          <h2 className="text-lg font-medium text-[#26324b]">{title}</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg p-1.5 transition"
+            className="text-[#26324b] hover:bg-[#f2f4f7] rounded-lg p-1.5 transition"
           >
             <XIcon />
           </button>
@@ -31,7 +31,7 @@ export default function Modal({ title, onClose, children, footer, size = 'md' })
         </div>
 
         {footer && (
-          <div className="px-6 py-4 border-t border-gray-100 shrink-0 flex justify-end gap-3">
+          <div className="px-6 h-[72px] border-t border-[#edf0f4] bg-[#f8f9fb] shrink-0 flex items-center justify-end gap-3">
             {footer}
           </div>
         )}

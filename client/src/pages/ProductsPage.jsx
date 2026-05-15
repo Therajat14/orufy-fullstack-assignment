@@ -6,12 +6,12 @@ import EditProductModal from '../components/products/EditProductModal'
 import DeleteProductModal from '../components/products/DeleteProductModal'
 import EmptyState from '../components/ui/EmptyState'
 import Button from '../components/ui/Button'
-import Toast, { useToast } from '../components/ui/Toast'
-import { GridEmptyIcon, SearchIcon, PlusIcon } from '../components/icons'
+import Toast from '../components/ui/Toast'
+import { useToast } from '../hooks/useToast'
+import { GridEmptyIcon, PlusIcon } from '../components/icons'
 
 export default function ProductsPage() {
   const { products, loading, addProduct, updateProduct, togglePublish, deleteProduct } = useProducts()
-  const [search, setSearch] = useState('')
   const [showAdd, setShowAdd] = useState(false)
   const [editProduct, setEditProduct] = useState(null)
   const [deleteTarget, setDeleteTarget] = useState(null)
@@ -35,39 +35,23 @@ export default function ProductsPage() {
     setDeleteTarget(null)
   }
 
-  const filtered = products.filter((p) =>
-    p.name.toLowerCase().includes(search.toLowerCase()) ||
-    (p.brandName || '').toLowerCase().includes(search.toLowerCase())
-  )
+  const filtered = products
 
   return (
     <div className="flex flex-col h-full">
+      <div className="px-8 pt-8 flex items-center justify-between bg-white">
+        <h1 className="text-[22px] font-bold text-[#344054]">Products</h1>
 
-      {/* Page header */}
-      <div className="px-6 py-4 flex items-center justify-between border-b border-gray-100 bg-white">
-        <h1 className="text-base font-semibold text-gray-900">Products</h1>
-
-        <div className="flex items-center gap-3">
-          <label className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 w-56 cursor-text">
-            <SearchIcon />
-            <input
-              type="text"
-              placeholder="Search products…"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="text-sm outline-none bg-transparent text-gray-600 placeholder-gray-400 w-full"
-            />
-          </label>
-
-          <Button onClick={() => setShowAdd(true)} size="sm">
-            <PlusIcon size={13} />
-            Add Products
-          </Button>
-        </div>
+        <button
+          onClick={() => setShowAdd(true)}
+          className="inline-flex items-center gap-2 text-[22px] font-medium text-[#344054] hover:text-[#1824e8] transition"
+        >
+          <PlusIcon size={20} />
+          Add Products
+        </button>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 p-6 overflow-auto">
+      <div className="flex-1 px-8 pt-5 pb-8 overflow-auto">
         {loading ? (
           <div className="flex items-center justify-center h-64">
             <div className="w-8 h-8 border-4 border-indigo-100 border-t-[#1e1b8e] rounded-full animate-spin" />
@@ -75,20 +59,14 @@ export default function ProductsPage() {
         ) : filtered.length === 0 ? (
           <EmptyState
             icon={<GridEmptyIcon />}
-            title={search ? `No results for "${search}"` : 'Feels a little empty over here…'}
-            description={
-              search
-                ? 'Try a different search term.'
-                : 'You can create products without connecting a store and add them to any store anytime.'
-            }
+            title="Feels a little empty over here..."
+            description="You can create products without connecting store you can add products to store anytime"
             action={
-              !search && (
-                <Button onClick={() => setShowAdd(true)}>Add your Products</Button>
-              )
+              <Button onClick={() => setShowAdd(true)} className="min-w-[315px]">Add your Products</Button>
             }
           />
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6">
             {filtered.map((product) => (
               <ProductCard
                 key={product._id}

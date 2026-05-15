@@ -83,7 +83,7 @@ export const UploadIcon = ({ size = 28 }) => (
   </svg>
 )
 
-export const GridEmptyIcon = ({ size = 52 }) => (
+export const GridEmptyIcon = ({ size = 78 }) => (
   <svg width={size} height={size} viewBox="0 0 64 64" fill="none">
     <rect x="4" y="4" width="24" height="24" rx="4" stroke="#1e1b8e" strokeWidth="2.5" fill="none" />
     <rect x="36" y="4" width="24" height="24" rx="4" stroke="#1e1b8e" strokeWidth="2.5" fill="none" />

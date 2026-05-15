@@ -1,14 +1,14 @@
 const variants = {
-  primary:   'bg-[#1e1b8e] hover:bg-[#17158a] text-white',
-  secondary: 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50',
-  danger:    'bg-[#1e1b8e] hover:bg-[#17158a] text-white',
-  ghost:     'text-gray-600 hover:bg-gray-100',
+  primary:   'bg-[#1824e8] hover:bg-[#1018bf] text-white shadow-[0_8px_18px_rgba(24,36,232,0.18)]',
+  secondary: 'bg-white border border-[#d7dce5] text-[#344054] hover:bg-[#f8fafc]',
+  danger:    'bg-[#1824e8] hover:bg-[#1018bf] text-white shadow-[0_8px_18px_rgba(24,36,232,0.18)]',
+  ghost:     'text-[#667085] hover:bg-[#f2f4f7]',
 }
 
 const sizes = {
-  sm: 'px-4 py-1.5 text-xs',
-  md: 'px-5 py-2.5 text-sm',
-  lg: 'px-7 py-3 text-sm',
+  sm: 'h-10 px-4 text-sm',
+  md: 'h-10 px-5 text-sm',
+  lg: 'h-11 px-7 text-sm',
 }
 
 export default function Button({
@@ -30,7 +30,7 @@ export default function Button({
         inline-flex items-center justify-center gap-1.5
         ${variants[variant]} ${sizes[size]}
         ${fullWidth ? 'w-full' : ''}
-        font-semibold rounded-xl transition-all active:scale-[0.98]
+        font-semibold rounded-lg transition-all active:scale-[0.98]
         disabled:opacity-60 disabled:cursor-not-allowed
         ${className}
       `.trim()}

@@ -9,16 +9,15 @@ export default function DeleteProductModal({ product, onClose, onConfirm }) {
       size="sm"
       footer={
         <>
-          <Button variant="secondary" onClick={onClose}>Cancel</Button>
-          <Button variant="danger" onClick={onConfirm}>Delete</Button>
+          <Button variant="danger" onClick={onConfirm} className="min-w-[76px]">Delete</Button>
         </>
       }
     >
-      <div className="px-6 py-6">
-        <p className="text-sm text-gray-600 leading-relaxed">
-          Are you sure you want to delete{' '}
-          <span className="font-semibold text-gray-900">"{product.name}"</span>?
-          This action cannot be undone.
+      <div className="px-6 pt-4 pb-7">
+        <p className="text-sm text-[#344054] leading-6">
+          Are you sure you really want to delete this Product
+          <br />
+          “ <span className="font-semibold">{product.name}</span> ” ?
         </p>
       </div>
     </Modal>
