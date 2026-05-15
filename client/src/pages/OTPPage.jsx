@@ -2,9 +2,11 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { sendOtp, verifyOtp } from "../api/auth";
 import { useAuth } from "../hooks/useAuth";
+import { useToast } from "../hooks/useToast";
 import AuthLayout from "../layouts/AuthLayout";
 import { ROUTES } from "../constants/routes";
 import Button from "../components/ui/Button";
+import Toast from "../components/ui/Toast";
 
 const OTP_LENGTH = 6;
 
@@ -21,6 +23,7 @@ export default function OTPPage() {
   const [resendTimer, setResendTimer] = useState(20);
   const [resending, setResending] = useState(false);
   const inputRefs = useRef([]);
+  const { toast, showToast, clearToast } = useToast();
 
   useEffect(() => {
     if (!identifier) navigate(ROUTES.LOGIN);
@@ -79,7 +82,8 @@ export default function OTPPage() {
     if (resendTimer > 0 || resending) return;
     setResending(true);
     try {
-      await sendOtp(identifier);
+      const data = await sendOtp(identifier);
+      showToast(`Your demo OTP is: ${data.otp}`);
       setResendTimer(20);
       setOtp(Array(OTP_LENGTH).fill(""));
       setError("");
@@ -92,6 +96,7 @@ export default function OTPPage() {
   };
 
   return (
+    <>
     <AuthLayout>
       <h1
         className="w-full text-center text-[24px] leading-[29px] font-semibold text-[#11194f]"
@@ -156,5 +161,7 @@ export default function OTPPage() {
         )}
       </p>
     </AuthLayout>
+    <Toast message={toast} onClose={clearToast} duration={10000} />
+    </>
   );
 }
