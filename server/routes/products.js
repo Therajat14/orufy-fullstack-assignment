@@ -2,6 +2,8 @@ const express = require('express')
 const Product = require('../models/Product')
 const authMiddleware = require('../middleware/auth')
 const upload = require('../middleware/upload')
+const validate = require('../middleware/validate')
+const { createProductSchema, updateProductSchema, publishSchema } = require('../schemas/product')
 
 const router = express.Router()
 
@@ -18,13 +20,9 @@ router.get('/', authMiddleware, async (req, res) => {
 })
 
 // POST /api/products
-router.post('/', authMiddleware, upload.array('images', 10), async (req, res) => {
+router.post('/', authMiddleware, upload.array('images', 10), validate(createProductSchema), async (req, res) => {
   try {
     const { name, productType, quantityStock, mrp, sellingPrice, brandName, exchangeEligibility } = req.body
-
-    if (!name || !productType || !quantityStock || !mrp || !sellingPrice || !brandName) {
-      return res.status(400).json({ message: 'All fields are required' })
-    }
 
     // multer-storage-cloudinary sets file.path to the Cloudinary secure_url
     const imageUrls = (req.files || []).map((f) => f.path)
@@ -49,7 +47,7 @@ router.post('/', authMiddleware, upload.array('images', 10), async (req, res) =>
 })
 
 // PUT /api/products/:id
-router.put('/:id', authMiddleware, upload.array('images', 10), async (req, res) => {
+router.put('/:id', authMiddleware, upload.array('images', 10), validate(updateProductSchema), async (req, res) => {
   try {
     const product = await Product.findOne({ _id: req.params.id, createdBy: req.user._id })
     if (!product) return res.status(404).json({ message: 'Product not found' })
@@ -81,7 +79,7 @@ router.put('/:id', authMiddleware, upload.array('images', 10), async (req, res) 
 })
 
 // PATCH /api/products/:id/publish
-router.patch('/:id/publish', authMiddleware, async (req, res) => {
+router.patch('/:id/publish', authMiddleware, validate(publishSchema), async (req, res) => {
   try {
     const product = await Product.findOneAndUpdate(
       { _id: req.params.id, createdBy: req.user._id },
