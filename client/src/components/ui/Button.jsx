@@ -1,42 +1,49 @@
-const variants = {
-  primary:   'bg-[#1824e8] hover:bg-[#1018bf] text-white shadow-[0_8px_18px_rgba(24,36,232,0.18)]',
-  auth:      'bg-[#071074] hover:bg-[#050b5d] text-white',
-  secondary: 'bg-white border border-[#d7dce5] text-[#344054] hover:bg-[#f8fafc]',
-  danger:    'bg-[#1824e8] hover:bg-[#1018bf] text-white shadow-[0_8px_18px_rgba(24,36,232,0.18)]',
-  ghost:     'text-[#667085] hover:bg-[#f2f4f7]',
-}
-
-const sizes = {
-  sm: 'h-10 px-4 text-sm',
-  md: 'h-10 px-5 text-sm',
-  lg: 'h-11 px-7 text-sm',
-}
-
 export default function Button({
   children,
-  variant = 'primary',
-  size = 'md',
-  disabled,
   onClick,
-  type = 'button',
-  className = '',
-  fullWidth = false,
+  disabled,
+  variant = "primary",
+  className = "",
+  style: styleProp = {},
+  ...props
 }) {
+  const bgColor =
+    {
+      primary: disabled ? "#a5b4fc" : "#3b4cca",
+      danger: disabled ? "#fca5a5" : "#3b4cca", // matches Figma — delete button is also indigo
+    }[variant] ?? "#3b4cca";
+
   return (
     <button
-      type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`
-        inline-flex items-center justify-center gap-1.5
-        ${variants[variant]} ${sizes[size]}
-        ${fullWidth ? 'w-full' : ''}
-        font-semibold rounded-lg transition-all active:scale-[0.98]
-        disabled:opacity-60 disabled:cursor-not-allowed
-        ${className}
-      `.trim()}
+      className={className}
+      style={{
+        height: "36px",
+        padding: "0 22px",
+        borderRadius: "8px",
+        border: "none",
+        backgroundColor: bgColor,
+        color: "#ffffff",
+        fontSize: "13px",
+        fontWeight: 600,
+        cursor: disabled ? "not-allowed" : "pointer",
+        transition: "opacity 0.15s",
+        whiteSpace: "nowrap",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        ...styleProp,
+      }}
+      onMouseEnter={(e) => {
+        if (!disabled) e.currentTarget.style.opacity = "0.88";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.opacity = "1";
+      }}
+      {...props}
     >
       {children}
     </button>
-  )
+  );
 }

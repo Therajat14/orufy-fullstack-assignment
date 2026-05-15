@@ -1,41 +1,133 @@
-import { useEffect } from 'react'
-import { XIcon } from '../icons'
+import { useEffect } from "react";
+import { XIcon } from "../icons";
 
-export default function Modal({ title, onClose, children, footer, size = 'md' }) {
-  const sizeClass = { sm: 'max-w-[400px]', md: 'max-w-[472px]', lg: 'max-w-[560px]' }
+export default function Modal({
+  title,
+  onClose,
+  children,
+  footer,
+  size = "md",
+}) {
+  const sizeMap = { sm: "360px", md: "420px", lg: "500px" };
 
   useEffect(() => {
-    const handler = (e) => { if (e.key === 'Escape') onClose() }
-    document.addEventListener('keydown', handler)
-    return () => document.removeEventListener('keydown', handler)
-  }, [onClose])
+    const handler = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [onClose]);
 
   return (
     <div
-      className="fixed inset-0 bg-[#1f2a44]/45 flex items-start justify-center z-50 p-4 pt-[90px]"
       onClick={(e) => e.target === e.currentTarget && onClose()}
+      style={{
+        position: "fixed",
+        inset: 0,
+        backgroundColor: "rgba(15, 22, 40, 0.45)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 50,
+        padding: "16px",
+      }}
     >
-      <div className={`bg-white rounded-lg shadow-2xl w-full ${sizeClass[size]} max-h-[calc(100vh-120px)] flex flex-col overflow-hidden`}>
-        <div className="flex items-center justify-between px-6 h-14 border-b border-[#edf0f4] shrink-0">
-          <h2 className="text-lg font-medium text-[#26324b]">{title}</h2>
+      <div
+        style={{
+          backgroundColor: "#ffffff",
+          borderRadius: "10px",
+          boxShadow: "0 20px 48px rgba(0,0,0,0.20)",
+          width: "100%",
+          maxWidth: sizeMap[size],
+          maxHeight: "calc(100vh - 80px)",
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+        }}
+      >
+        {/* Header */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "14px 18px 13px",
+            borderBottom: "1px solid #ECEEF2",
+            flexShrink: 0,
+          }}
+        >
+          <h2
+            style={{
+              margin: 0,
+              fontSize: "14px",
+              fontWeight: 700,
+              color: "#0f1623",
+              letterSpacing: "-0.01em",
+            }}
+          >
+            {title}
+          </h2>
           <button
             onClick={onClose}
-            className="text-[#26324b] hover:bg-[#f2f4f7] rounded-lg p-1.5 transition"
+            style={{
+              width: "24px",
+              height: "24px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: "5px",
+              border: "none",
+              background: "none",
+              cursor: "pointer",
+              color: "#6B7280",
+              transition: "background 0.15s",
+              flexShrink: 0,
+            }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.backgroundColor = "#F3F4F6")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.backgroundColor = "transparent")
+            }
           >
-            <XIcon />
+            <XIcon size={14} />
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto min-h-0">
+        {/* Scrollable body — scrollbar hidden */}
+        <div
+          className="modal-scroll-body"
+          style={{
+            flex: 1,
+            overflowY: "auto",
+            overflowX: "hidden",
+            minHeight: 0,
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+          }}
+        >
+          <style>{`.modal-scroll-body::-webkit-scrollbar { display: none; }`}</style>
           {children}
         </div>
 
+        {/* Footer */}
         {footer && (
-          <div className="px-6 h-[72px] border-t border-[#edf0f4] bg-[#f8f9fb] shrink-0 flex items-center justify-end gap-3">
+          <div
+            style={{
+              padding: "10px 18px",
+              borderTop: "1px solid #ECEEF2",
+              backgroundColor: "#ffffff",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
+              gap: "8px",
+              flexShrink: 0,
+            }}
+          >
             {footer}
           </div>
         )}
       </div>
     </div>
-  )
+  );
 }
