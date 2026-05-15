@@ -1,102 +1,272 @@
-import { useState, useRef, useEffect } from 'react'
-import { Outlet, useNavigate, useLocation } from 'react-router-dom'
-import Sidebar from './Sidebar'
-import { useAuth } from '../../hooks/useAuth'
-import { HomeIcon, ProductsIcon, ChevronDown, LogoutIcon, SearchIcon } from '../icons'
-
-const PAGE_META = {
-  '/home':     { label: 'Home',     Icon: HomeIcon },
-  '/products': { label: 'Products', Icon: ProductsIcon },
-}
+import { useState, useRef, useEffect } from "react";
+import { Outlet, useNavigate, useSearchParams } from "react-router-dom";
+import Sidebar from "./Sidebar";
+import { useAuth } from "../../hooks/useAuth";
+import { ChevronDown, LogoutIcon, SearchIcon } from "../icons";
 
 export default function AppLayout() {
-  const { user, logout } = useAuth()
-  const [dropdownOpen, setDropdownOpen] = useState(false)
-  const dropdownRef = useRef(null)
-  const navigate = useNavigate()
-  const { pathname } = useLocation()
-
-  const page = PAGE_META[pathname] || PAGE_META['/home']
+  const { user, logout } = useAuth();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchQuery = searchParams.get("q") || "";
 
   useEffect(() => {
     const handler = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target))
-        setDropdownOpen(false)
-    }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
-  }, [])
+        setDropdownOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   const handleLogout = () => {
-    logout()
-    navigate('/login')
-  }
+    logout();
+    navigate("/login");
+  };
 
-  const initials = user?.name?.[0]?.toUpperCase() || user?.identifier?.[0]?.toUpperCase() || 'U'
-
-  const showProductsTools = pathname === '/products'
+  const initials =
+    user?.name?.[0]?.toUpperCase() ||
+    user?.identifier?.[0]?.toUpperCase() ||
+    "U";
 
   return (
-    <div className="flex min-h-screen bg-white text-[#344054]">
+    <div
+      style={{
+        display: "flex",
+        height: "100vh",
+        overflow: "hidden",
+        backgroundColor: "#1D222B",
+      }}
+    >
       <Sidebar />
 
-      <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
-        <header className="h-16 flex items-center justify-between px-7 shrink-0 border-b border-[#eef0f5] bg-[linear-gradient(105deg,#fff7f5_0%,#fff_34%,#fbffe9_56%,#f8fbff_100%)]">
-          <div className="flex items-center gap-2 text-sm text-[#26324b]">
-            {showProductsTools && (
-              <>
-                <page.Icon size={14} />
-                <span className="font-medium">{page.label}</span>
-              </>
-            )}
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          minHeight: 0,
+          minWidth: 0,
+          backgroundColor: "#ffffff",
+        }}
+      >
+        {/* ── Navbar ── */}
+        <header
+          style={{
+            height: "52px",
+            flexShrink: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "0 20px",
+            position: "relative",
+            borderBottom: "1px solid rgba(0,0,0,0.06)",
+          }}
+        >
+          {/* Gradient mesh */}
+          <div
+            aria-hidden
+            style={{
+              position: "absolute",
+              inset: 0,
+              pointerEvents: "none",
+              background: `
+                radial-gradient(ellipse 40% 200% at 0% 50%,   rgba(255,210,190,0.45) 0%, transparent 70%),
+                radial-gradient(ellipse 35% 200% at 42% 50%,  rgba(255,245,190,0.35) 0%, transparent 65%),
+                radial-gradient(ellipse 30% 200% at 78% 50%,  rgba(230,235,245,0.15) 0%, transparent 60%),
+                #ffffff
+              `,
+            }}
+          />
+
+          {/* Left — page icon + label (spacer) */}
+          <div style={{ flex: 1, position: "relative", zIndex: 1 }} />
+
+          {/* Center — Search bar */}
+          <div
+            style={{
+              position: "relative",
+              zIndex: 1,
+              flex: "0 0 260px",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "7px",
+                backgroundColor: "rgba(255,255,255,0.7)",
+                border: "1px solid #E8ECF2",
+                borderRadius: "8px",
+                padding: "0 12px",
+                height: "32px",
+                backdropFilter: "blur(4px)",
+              }}
+            >
+              <SearchIcon
+                size={13}
+                style={{ color: "#9CA3AF", flexShrink: 0 }}
+              />
+              <input
+                type="text"
+                placeholder="Search Services, Products"
+                value={searchQuery}
+                onChange={(e) =>
+                  setSearchParams(
+                    e.target.value ? { q: e.target.value } : {},
+                    { replace: true }
+                  )
+                }
+                style={{
+                  background: "none",
+                  border: "none",
+                  outline: "none",
+                  fontSize: "12.5px",
+                  color: "#1a1f2e",
+                  width: "100%",
+                  fontFamily: "inherit",
+                }}
+              />
+            </div>
           </div>
 
-          <div className="ml-auto flex items-center gap-14">
-            {showProductsTools && (
-              <label className="hidden md:flex h-[34px] w-[340px] items-center gap-2 rounded bg-[#f4f5f8] px-3 text-[#667085] cursor-text">
-                <SearchIcon size={15} />
-                <input
-                  type="text"
-                  placeholder="Search Services, Products"
-                  className="w-full bg-transparent text-sm text-[#344054] placeholder:text-[#667085] outline-none"
-                />
-              </label>
-            )}
-
-          <div ref={dropdownRef} className="relative">
+          {/* Right — Avatar + dropdown */}
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              justifyContent: "flex-end",
+              position: "relative",
+              zIndex: 1,
+            }}
+            ref={dropdownRef}
+          >
             <button
               onClick={() => setDropdownOpen((v) => !v)}
-              className="flex items-center gap-3 hover:opacity-80 transition"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                padding: 0,
+              }}
             >
-              <div className="w-7 h-7 rounded-full bg-linear-to-br from-orange-300 via-pink-300 to-indigo-300 border border-white shadow-sm flex items-center justify-center text-white text-xs font-bold select-none">
+              <div
+                style={{
+                  width: "28px",
+                  height: "28px",
+                  borderRadius: "50%",
+                  background:
+                    "linear-gradient(135deg, #f97316 0%, #ec4899 50%, #818cf8 100%)",
+                  border: "1.5px solid rgba(255,255,255,0.6)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "11px",
+                  fontWeight: 700,
+                  color: "#fff",
+                  userSelect: "none",
+                }}
+              >
                 {initials}
               </div>
-              <ChevronDown size={15} />
+              <ChevronDown size={13} style={{ color: "#9CA3AF" }} />
             </button>
 
             {dropdownOpen && (
-              <div className="absolute right-0 top-11 bg-white border border-gray-200 rounded-xl shadow-xl py-1.5 w-48 z-50">
-                <div className="px-4 py-2.5 border-b border-gray-100">
-                  <p className="text-sm font-semibold text-gray-800 truncate">{user?.name || 'User'}</p>
-                  <p className="text-xs text-gray-400 truncate mt-0.5">{user?.identifier}</p>
+              <div
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  top: "calc(100% + 10px)",
+                  backgroundColor: "#ffffff",
+                  border: "1px solid rgba(0,0,0,0.08)",
+                  borderRadius: "10px",
+                  boxShadow: "0 16px 40px rgba(0,0,0,0.12)",
+                  padding: "6px 0",
+                  width: "192px",
+                  zIndex: 50,
+                }}
+              >
+                <div
+                  style={{
+                    padding: "10px 14px",
+                    borderBottom: "1px solid #F2F4F7",
+                  }}
+                >
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: "13px",
+                      fontWeight: 600,
+                      color: "#344054",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {user?.name || "User"}
+                  </p>
+                  <p
+                    style={{
+                      margin: "3px 0 0",
+                      fontSize: "11.5px",
+                      color: "#98A2B3",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {user?.identifier}
+                  </p>
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition"
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "9px",
+                    padding: "9px 14px",
+                    fontSize: "13px",
+                    color: "#f87171",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    textAlign: "left",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.backgroundColor =
+                      "rgba(248,113,113,0.07)")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.backgroundColor = "transparent")
+                  }
                 >
-                  <LogoutIcon size={15} />
+                  <LogoutIcon size={14} />
                   Logout
                 </button>
               </div>
             )}
           </div>
-          </div>
         </header>
 
-        <main className="flex-1 overflow-auto bg-white">
+        {/* Page content */}
+        <main
+          style={{
+            flex: 1,
+            overflowY: "auto",
+            overflowX: "hidden",
+            backgroundColor: "#ffffff",
+          }}
+        >
           <Outlet />
         </main>
       </div>
     </div>
-  )
+  );
 }
