@@ -70,7 +70,11 @@ export default function AuthLeftPanel() {
       />
 
       <div className="absolute top-6 left-4 z-20">
-        <img src={logo} alt="Productr" className="h-[34px] w-auto object-contain" />
+        <img
+          src={logo}
+          alt="Productr"
+          className="h-[34px] w-auto object-contain"
+        />
       </div>
 
       {/* Showcase Card */}
