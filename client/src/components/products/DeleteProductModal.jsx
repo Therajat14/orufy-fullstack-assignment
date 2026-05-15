@@ -1,5 +1,5 @@
-import Modal from '../ui/Modal'
-import Button from '../ui/Button'
+import Modal from "../ui/Modal";
+import Button from "../ui/Button";
 
 export default function DeleteProductModal({ product, onClose, onConfirm }) {
   return (
@@ -8,18 +8,24 @@ export default function DeleteProductModal({ product, onClose, onConfirm }) {
       onClose={onClose}
       size="sm"
       footer={
-        <>
-          <Button variant="danger" onClick={onConfirm} className="min-w-[76px]">Delete</Button>
-        </>
+        <Button variant="danger" onClick={onConfirm}>
+          Delete
+        </Button>
       }
     >
-      <div className="px-6 pt-4 pb-7">
-        <p className="text-sm text-[#344054] leading-6">
+      <div style={{ padding: "16px 18px 20px" }}>
+        <p
+          style={{
+            margin: 0,
+            fontSize: "13px",
+            color: "#344054",
+            lineHeight: "1.7",
+          }}
+        >
           Are you sure you really want to delete this Product
-          <br />
-          “ <span className="font-semibold">{product.name}</span> ” ?
+          <br />" <span style={{ fontWeight: 700 }}>{product.name}</span> " ?
         </p>
       </div>
     </Modal>
-  )
+  );
 }
