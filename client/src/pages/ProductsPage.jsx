@@ -9,7 +9,7 @@ import EmptyState from "../components/ui/EmptyState";
 import Button from "../components/ui/Button";
 import Toast from "../components/ui/Toast";
 import { useToast } from "../hooks/useToast";
-import { GridEmptyIcon } from "../components/icons";
+import { GridEmptyIcon } from "../components/layout";
 
 export default function ProductsPage() {
   const {
