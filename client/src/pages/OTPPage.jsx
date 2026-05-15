@@ -1,25 +1,30 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import api from '../services/api'
-import { useAuth } from '../context/AuthContext'
+import { sendOtp, verifyOtp } from '../api/auth'
+import { useAuth } from '../hooks/useAuth'
+import AuthLayout from '../layouts/AuthLayout'
+import { ROUTES } from '../constants/routes'
 
 const OTP_LENGTH = 6
 
 export default function OTPPage() {
-  const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(''))
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [resendTimer, setResendTimer] = useState(20)
-  const [resending, setResending] = useState(false)
-  const inputRefs = useRef([])
   const navigate = useNavigate()
   const location = useLocation()
   const { login } = useAuth()
 
   const identifier = location.state?.identifier || ''
+  const demoOtp = location.state?.demoOtp || null
+
+  const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(''))
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [resendTimer, setResendTimer] = useState(20)
+  const [resending, setResending] = useState(false)
+  const [shownOtp, setShownOtp] = useState(demoOtp)
+  const inputRefs = useRef([])
 
   useEffect(() => {
-    if (!identifier) navigate('/login')
+    if (!identifier) navigate(ROUTES.LOGIN)
     inputRefs.current[0]?.focus()
   }, [])
 
@@ -35,15 +40,12 @@ export default function OTPPage() {
     updated[index] = value
     setOtp(updated)
     setError('')
-    if (value && index < OTP_LENGTH - 1) {
-      inputRefs.current[index + 1]?.focus()
-    }
+    if (value && index < OTP_LENGTH - 1) inputRefs.current[index + 1]?.focus()
   }
 
   const handleKeyDown = (index, e) => {
-    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+    if (e.key === 'Backspace' && !otp[index] && index > 0)
       inputRefs.current[index - 1]?.focus()
-    }
   }
 
   const handlePaste = (e) => {
@@ -58,17 +60,14 @@ export default function OTPPage() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     const code = otp.join('')
-    if (code.length < OTP_LENGTH) {
-      setError('Please enter a valid OTP')
-      return
-    }
+    if (code.length < OTP_LENGTH) { setError('Please enter a valid OTP'); return }
     setLoading(true)
     setError('')
     try {
-      const { data } = await api.post('/auth/verify-otp', { identifier, otp: code })
+      const data = await verifyOtp(identifier, code)
       login(data.user, data.token)
-      navigate('/home')
-    } catch (err) {
+      navigate(ROUTES.HOME)
+    } catch {
       setError('Please enter a valid OTP')
       setOtp(Array(OTP_LENGTH).fill(''))
       inputRefs.current[0]?.focus()
@@ -81,7 +80,8 @@ export default function OTPPage() {
     if (resendTimer > 0 || resending) return
     setResending(true)
     try {
-      await api.post('/auth/send-otp', { identifier })
+      const data = await sendOtp(identifier)
+      setShownOtp(data.otp)
       setResendTimer(20)
       setOtp(Array(OTP_LENGTH).fill(''))
       setError('')
@@ -96,112 +96,71 @@ export default function OTPPage() {
   const filled = otp.every((d) => d !== '')
 
   return (
-    <div className="min-h-screen flex">
-      {/* Left hero panel */}
-      <div className="hidden lg:flex w-1/2 relative overflow-hidden bg-gradient-to-br from-pink-200 via-blue-200 to-orange-100 items-center justify-center">
-        <div className="absolute top-0 left-0 w-64 h-64 rounded-full bg-pink-300/40 blur-3xl -translate-x-1/3 -translate-y-1/3" />
-        <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full bg-blue-300/40 blur-3xl translate-x-1/3 translate-y-1/3" />
-        <div className="absolute top-1/3 right-0 w-48 h-48 rounded-full bg-orange-200/50 blur-2xl translate-x-1/4" />
-        <div className="relative z-10 flex flex-col items-center">
-          <div
-            className="relative rounded-[2.5rem] overflow-hidden shadow-2xl"
-            style={{ width: 220, height: 380, background: 'linear-gradient(160deg,#f97316 0%,#fb923c 40%,#fed7aa 100%)' }}
-          >
-            <div className="absolute inset-0 flex items-center justify-center">
-              <svg viewBox="0 0 120 200" width="110" height="200" fill="none">
-                <ellipse cx="60" cy="100" rx="55" ry="95" fill="rgba(0,0,0,0.15)" />
-                <g fill="#1a1a2e" opacity="0.85">
-                  <circle cx="68" cy="38" r="10" />
-                  <path d="M60 50 Q55 70 50 85 L42 110 L55 115 L62 92 L72 80 L82 105 L72 130 L85 132 L95 100 L80 72 L75 55 Z" />
-                  <path d="M50 85 L35 105 L45 110 L57 92 Z" />
-                </g>
-              </svg>
-            </div>
-            <div className="absolute bottom-6 left-0 right-0 text-center text-white text-sm font-semibold px-4">
-              <p>Uplift your</p>
-              <p>product to market</p>
-            </div>
+    <AuthLayout>
+      <h1 className="text-[22px] font-bold text-gray-900 leading-snug mb-1.5">
+        Login to your Productr Account
+      </h1>
+      <p className="text-[13px] text-gray-500 mb-5">
+        OTP sent to <span className="font-medium text-gray-700">{identifier}</span>
+      </p>
+
+      {shownOtp && (
+        <div className="mb-5 px-4 py-3 rounded-xl bg-amber-50 border border-amber-200 flex items-center gap-3">
+          <span className="text-amber-600 text-xs font-semibold uppercase tracking-wide">Demo OTP</span>
+          <span className="text-amber-800 font-mono font-bold text-lg tracking-widest">{shownOtp}</span>
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div>
+          <label className="block text-[13px] font-medium text-gray-600 mb-3">
+            Enter OTP
+          </label>
+          <div className="flex gap-2.5" onPaste={handlePaste}>
+            {otp.map((digit, i) => (
+              <input
+                key={i}
+                ref={(el) => (inputRefs.current[i] = el)}
+                type="text"
+                inputMode="numeric"
+                maxLength={1}
+                value={digit}
+                onChange={(e) => handleChange(i, e.target.value)}
+                onKeyDown={(e) => handleKeyDown(i, e)}
+                className={`w-11 h-12 text-center text-lg font-semibold border rounded-xl outline-none transition
+                  ${error
+                    ? 'border-red-400 bg-red-50 focus:border-red-500'
+                    : 'border-gray-200 bg-gray-50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100'
+                  }`}
+              />
+            ))}
           </div>
-        </div>
-      </div>
-
-      {/* Right OTP panel */}
-      <div className="flex-1 flex flex-col justify-center items-center px-8 bg-white">
-        <div className="hidden lg:block absolute top-6 left-6">
-          <ProductrLogo />
+          {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
         </div>
 
-        <div className="w-full max-w-sm">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            Login to your Productr Account
-          </h1>
-          <p className="text-sm text-gray-500 mb-8">
-            OTP sent to <span className="font-medium text-gray-700">{identifier}</span>
-          </p>
+        <button
+          type="submit"
+          disabled={loading || !filled}
+          className="w-full bg-[#1e1b8e] hover:bg-[#17158a] active:scale-[0.98] text-white font-semibold py-3 rounded-xl transition-all disabled:opacity-60 text-sm"
+        >
+          {loading ? 'Verifying…' : 'Enter your OTP'}
+        </button>
+      </form>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">
-                Enter OTP
-              </label>
-              <div className="flex gap-2" onPaste={handlePaste}>
-                {otp.map((digit, i) => (
-                  <input
-                    key={i}
-                    ref={(el) => (inputRefs.current[i] = el)}
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={1}
-                    value={digit}
-                    onChange={(e) => handleChange(i, e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(i, e)}
-                    className={`w-10 h-11 text-center text-lg font-semibold border rounded-lg outline-none transition
-                      ${error ? 'border-red-400 focus:border-red-500' : 'border-gray-300 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600'}`}
-                  />
-                ))}
-              </div>
-              {error && (
-                <p className="text-red-500 text-xs mt-2">{error}</p>
-              )}
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading || !filled}
-              className="w-full bg-[#1e1b8e] hover:bg-[#17158a] text-white font-semibold py-2.5 rounded-lg transition disabled:opacity-60 text-sm"
-            >
-              {loading ? 'Verifying...' : 'Enter your OTP'}
-            </button>
-          </form>
-
-          <p className="mt-4 text-center text-sm text-gray-500">
-            Didn't receive OTP?{' '}
-            {resendTimer > 0 ? (
-              <span className="text-gray-400">Resend in {resendTimer}s</span>
-            ) : (
-              <button
-                onClick={handleResend}
-                disabled={resending}
-                className="text-indigo-700 font-semibold hover:underline disabled:opacity-50"
-              >
-                {resending ? 'Sending...' : 'Resend'}
-              </button>
-            )}
-          </p>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function ProductrLogo() {
-  return (
-    <div className="flex items-center gap-2">
-      <span className="text-xl font-bold text-[#1a1a5c]">Productr</span>
-      <svg width="28" height="20" viewBox="0 0 28 20" fill="none">
-        <circle cx="10" cy="10" r="8" stroke="#f97316" strokeWidth="2.5" fill="none" />
-        <circle cx="18" cy="10" r="8" stroke="#f97316" strokeWidth="2.5" fill="none" />
-      </svg>
-    </div>
+      <p className="mt-4 text-[13px] text-gray-500 text-center">
+        Didn't receive OTP?{' '}
+        {resendTimer > 0 ? (
+          <span className="text-gray-400">Resend in {resendTimer}s</span>
+        ) : (
+          <button
+            onClick={handleResend}
+            disabled={resending}
+            className="text-[#1e1b8e] font-semibold hover:underline disabled:opacity-50"
+          >
+            {resending ? 'Sending…' : 'Resend'}
+          </button>
+        )}
+      </p>
+    </AuthLayout>
   )
 }

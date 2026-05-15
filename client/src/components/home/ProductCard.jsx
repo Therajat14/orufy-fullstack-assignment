@@ -1,97 +1,92 @@
 import { useState } from 'react'
+import { ChevronLeft, ChevronRight, TrashIcon, EditIcon } from '../icons'
 
-const TrashIcon = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="3 6 5 6 21 6" />
-    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-    <path d="M10 11v6M14 11v6" />
-    <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-  </svg>
-)
-
-const ChevronLeft = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-    <polyline points="15 18 9 12 15 6" />
-  </svg>
-)
-
-const ChevronRight = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-    <polyline points="9 18 15 12 9 6" />
-  </svg>
-)
+function Row({ label, value }) {
+  return (
+    <div className="flex items-center justify-between py-0.75">
+      <span className="text-[11px] text-gray-400">{label}</span>
+      <span className="text-[11px] text-gray-700 font-medium">{value ?? '—'}</span>
+    </div>
+  )
+}
 
 export default function ProductCard({ product, onPublishToggle, onEdit, onDelete }) {
   const [imgIndex, setImgIndex] = useState(0)
   const images = product.images || []
 
-  const prevImg = () => setImgIndex((i) => (i - 1 + images.length) % images.length)
-  const nextImg = () => setImgIndex((i) => (i + 1) % images.length)
+  const prev = (e) => { e.stopPropagation(); setImgIndex((i) => (i - 1 + images.length) % images.length) }
+  const next = (e) => { e.stopPropagation(); setImgIndex((i) => (i + 1) % images.length) }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden flex flex-col">
-      {/* Image carousel */}
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow flex flex-col overflow-hidden">
+
+      {/* Image area */}
       <div className="relative h-44 bg-gray-50 flex items-center justify-center">
         {images.length > 0 ? (
           <>
             <img
               src={images[imgIndex]}
               alt={product.name}
-              className="h-full w-full object-contain p-2"
+              className="h-full w-full object-contain p-3"
             />
             {images.length > 1 && (
               <>
-                <button
-                  onClick={prevImg}
-                  className="absolute left-1 top-1/2 -translate-y-1/2 bg-white/80 rounded-full p-0.5 shadow hover:bg-white transition"
-                >
-                  <ChevronLeft />
+                <button onClick={prev} className="absolute left-1.5 top-1/2 -translate-y-1/2 bg-white/90 rounded-full p-1 shadow hover:bg-white transition">
+                  <ChevronLeft size={13} />
                 </button>
-                <button
-                  onClick={nextImg}
-                  className="absolute right-1 top-1/2 -translate-y-1/2 bg-white/80 rounded-full p-0.5 shadow hover:bg-white transition"
-                >
-                  <ChevronRight />
+                <button onClick={next} className="absolute right-1.5 top-1/2 -translate-y-1/2 bg-white/90 rounded-full p-1 shadow hover:bg-white transition">
+                  <ChevronRight size={13} />
                 </button>
+                <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1">
+                  {images.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setImgIndex(i)}
+                      className={`w-1.5 h-1.5 rounded-full transition ${i === imgIndex ? 'bg-gray-500' : 'bg-gray-300'}`}
+                    />
+                  ))}
+                </div>
               </>
-            )}
-            {/* Dots */}
-            {images.length > 1 && (
-              <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1">
-                {images.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setImgIndex(i)}
-                    className={`w-1.5 h-1.5 rounded-full transition ${i === imgIndex ? 'bg-gray-600' : 'bg-gray-300'}`}
-                  />
-                ))}
-              </div>
             )}
           </>
         ) : (
-          <div className="text-gray-300 text-sm">No image</div>
+          <div className="flex flex-col items-center gap-1 text-gray-300">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <circle cx="8.5" cy="8.5" r="1.5" />
+              <polyline points="21 15 16 10 5 21" />
+            </svg>
+            <span className="text-xs">No image</span>
+          </div>
+        )}
+
+        {/* Published badge */}
+        {product.published && (
+          <span className="absolute top-2 right-2 bg-green-100 text-green-700 text-[10px] font-semibold px-2 py-0.5 rounded-full">
+            Published
+          </span>
         )}
       </div>
 
-      {/* Details */}
-      <div className="p-4 flex-1 flex flex-col gap-3">
-        <h3 className="font-semibold text-gray-900 text-sm">{product.name}</h3>
+      {/* Card body */}
+      <div className="p-4 flex-1 flex flex-col">
+        <h3 className="font-semibold text-gray-900 text-sm mb-3 leading-snug">{product.name}</h3>
 
-        <div className="space-y-1 text-xs">
+        <div className="divide-y divide-gray-50 flex-1">
           <Row label="Product type" value={product.productType} />
           <Row label="Quantity Stock" value={product.quantityStock} />
           <Row label="MRP" value={`₹ ${product.mrp}`} />
           <Row label="Selling Price" value={`₹ ${product.sellingPrice}`} />
           <Row label="Brand Name" value={product.brandName} />
-          <Row label="Total Number of images" value={images.length} />
-          <Row label="Exchange Eligibility" value={product.exchangeEligibility ? 'YES' : 'NO'} />
+          <Row label="Total Images" value={images.length} />
+          <Row label="Exchange Eligible" value={product.exchangeEligibility ? 'YES' : 'NO'} />
         </div>
 
-        {/* Actions */}
-        <div className="flex items-center gap-2 mt-auto pt-2">
+        {/* Action buttons */}
+        <div className="flex items-center gap-2 mt-4 pt-3 border-t border-gray-50">
           <button
             onClick={() => onPublishToggle(product)}
-            className={`flex-1 text-xs font-semibold py-1.5 rounded-lg transition ${
+            className={`flex-1 text-[12px] font-semibold py-2 rounded-xl transition active:scale-[0.97] ${
               product.published
                 ? 'bg-green-500 hover:bg-green-600 text-white'
                 : 'bg-[#1e1b8e] hover:bg-[#17158a] text-white'
@@ -99,33 +94,23 @@ export default function ProductCard({ product, onPublishToggle, onEdit, onDelete
           >
             {product.published ? 'Unpublish' : 'Publish'}
           </button>
+
           <button
             onClick={() => onEdit(product)}
-            className="flex-1 text-xs font-semibold py-1.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition flex items-center justify-center gap-1"
+            className="flex items-center gap-1.5 px-3 py-2 text-[12px] font-semibold rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 transition active:scale-[0.97]"
           >
             Edit
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-            </svg>
+            <EditIcon />
           </button>
+
           <button
             onClick={() => onDelete(product)}
-            className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition"
+            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition active:scale-[0.97]"
           >
             <TrashIcon />
           </button>
         </div>
       </div>
-    </div>
-  )
-}
-
-function Row({ label, value }) {
-  return (
-    <div className="flex items-center justify-between">
-      <span className="text-gray-400">{label} -</span>
-      <span className="text-gray-800 font-medium">{value ?? '—'}</span>
     </div>
   )
 }

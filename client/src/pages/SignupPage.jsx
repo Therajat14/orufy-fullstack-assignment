@@ -5,7 +5,7 @@ import { useForm } from '../hooks/useForm'
 import AuthLayout from '../layouts/AuthLayout'
 import { ROUTES } from '../constants/routes'
 
-export default function LoginPage() {
+export default function SignupPage() {
   const navigate = useNavigate()
   const { values, errors, handleChange, setError } = useForm({ identifier: '' })
   const [loading, setLoading] = useState(false)
@@ -34,17 +34,20 @@ export default function LoginPage() {
       bottomSlot={
         <div className="border border-gray-200 rounded-2xl py-4 px-6 text-center bg-gray-50/60">
           <p className="text-[13px] text-gray-500 leading-relaxed">
-            Don't have a Productr Account?
+            Already have an account?
           </p>
-          <Link to={ROUTES.SIGNUP} className="text-[13px] font-semibold text-[#1e1b8e] hover:underline">
-            Sign up here
+          <Link to={ROUTES.LOGIN} className="text-[13px] font-semibold text-[#1e1b8e] hover:underline">
+            Login here
           </Link>
         </div>
       }
     >
-      <h1 className="text-[22px] font-bold text-gray-900 leading-snug mb-7">
-        Login to your Productr Account
+      <h1 className="text-[22px] font-bold text-gray-900 leading-snug mb-2">
+        Create your Productr Account
       </h1>
+      <p className="text-[13px] text-gray-500 mb-7">
+        Enter your email or phone — we'll send an OTP to verify.
+      </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -68,7 +71,7 @@ export default function LoginPage() {
           disabled={loading}
           className="w-full bg-[#1e1b8e] hover:bg-[#17158a] active:scale-[0.98] text-white font-semibold py-3 rounded-xl transition-all disabled:opacity-60 text-sm mt-1"
         >
-          {loading ? 'Sending OTP…' : 'Login'}
+          {loading ? 'Sending OTP…' : 'Create Account'}
         </button>
       </form>
     </AuthLayout>
