@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, TrashIcon } from "../icons";
+import { ChevronLeft, ChevronRight, TrashIcon } from "../layout";
 
 function Row({ label, value }) {
   return (
