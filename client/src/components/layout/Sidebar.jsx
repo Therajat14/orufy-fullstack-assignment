@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { HomeIcon, ProductsIcon, SearchIcon } from "../icons";
+import { HomeIcon, ProductsIcon, SearchIcon } from ".";
 import logo from "../../assets/logo/Logo2.png";
 
 export default function Sidebar() {
