@@ -155,3 +155,7 @@ npm run dev
 | `npm run dev` | Start Vite dev server |
 
 ---
+
+## License
+
+MIT
